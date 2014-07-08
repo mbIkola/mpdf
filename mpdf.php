@@ -1298,7 +1298,10 @@ function mPDF($mode='',$format='A4',$default_font_size=0,$default_font='',$mgl=1
 
 	$this->SetBasePath('');
 
-	$this->textparam = array();
+    $this->textparam = array(
+        'hyphens' => 2,
+        'outline-s' => false,
+    );
 
 	$this->specialcontent = '';
 	$this->selectoption = array();
@@ -3890,7 +3893,7 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='', $curre
 		if($this->ColorFlag) $s .='q '.$this->TextColor.' ';
 
 		// OUTLINE
-		if($this->textparam['outline-s'] && !$this->S) {	// mPDF 5.6.07
+		if(isset($this->textparam['outline-s']) && !$this->S) {	// mPDF 5.6.07
 			$s .=' '.sprintf('%.3F w',$this->LineWidth*_MPDFK).' ';
 			$s .=" $this->DrawColor ";
 			$s .=" 2 Tr ";
@@ -11218,7 +11221,7 @@ function docPageNum($num = 0, $extras = false) {
 				$ppgno = $num - $psarr['from'] + 1 + $offset; 
 				$lastreset = $psarr['from'];
 			}
-			if ($psarr['type']) { $type = $psarr['type']; }
+			if (isset($psarr['type']) && $psarr['type']) { $type = $psarr['type']; }
 			if (strtoupper($psarr['suppress'])=='ON' || $psarr['suppress']==1) { $suppress = 1; }
 			else if (strtoupper($psarr['suppress'])=='OFF') { $suppress = 0; }
 		}

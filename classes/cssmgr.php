@@ -933,14 +933,11 @@ function border_radius_expand($val,$k) {
 }
 /*-- END BORDER-RADIUS --*/
 
-function _mergeCSS($p, &$t) {
+function _mergeCSS($p, $tag,  &$t) {
 	// Save Cascading CSS e.g. "div.topic p" at this block level
-	if (isset($p) && $p) {
-		if ($t) { 
-			$t = $this->array_merge_recursive_unique($t, $p);
-		}
-	   	else { $t = $p; }
-	}
+    if ( ! isset($p[$tag]) || !$p[$tag]) return ;
+
+    $t = $t ? $this->array_merge_recursive($t, $p[$tag]) : $p; 
 }
 
 // for CSS handling
@@ -969,10 +966,10 @@ function array_merge_recursive_unique($array1, $array2) {
 
 
 function _mergeFullCSS($p, &$t, $tag, $classes, $id) {
-		$this->_mergeCSS($p[$tag], $t);
+		$this->_mergeCSS($p,$tag, $t);
 		// STYLESHEET CLASS e.g. .smallone{}  .redletter{}
 		foreach($classes AS $class) {
-		  $this->_mergeCSS($p['CLASS>>'.$class], $t);
+		  $this->_mergeCSS($p,'CLASS>>'.$class, $t);
 		}
 		// STYLESHEET nth-child SELECTOR e.g. tr:nth-child(odd)  td:nth-child(2n+1)
 		if ($tag=='TR' && isset($p) && $p)  {
@@ -999,22 +996,22 @@ function _mergeFullCSS($p, &$t, $tag, $classes, $id) {
 						}
 					}
 					if ($select) {
-		  				$this->_mergeCSS($p[$tag.'>>SELECTORNTHCHILD>>'.$m[1]], $t);
+		  				$this->_mergeCSS($p,$tag.'>>SELECTORNTHCHILD>>'.$m[1], $t);
 					}
 				}
 			}
 		}
 		// STYLESHEET CLASS e.g. #smallone{}  #redletter{}
 		if (isset($id) && $id) {
-		  $this->_mergeCSS($p['ID>>'.$id], $t);
+		  $this->_mergeCSS($p,'ID>>'.$id, $t);
 		}
 		// STYLESHEET CLASS e.g. .smallone{}  .redletter{}
 		foreach($classes AS $class) {
-		  $this->_mergeCSS($p[$tag.'>>CLASS>>'.$class], $t);
+		  $this->_mergeCSS($p,$tag.'>>CLASS>>'.$class, $t);
 		}
 		// STYLESHEET CLASS e.g. #smallone{}  #redletter{}
 		if (isset($id)) {
-		  $this->_mergeCSS($p[$tag.'>>ID>>'.$id], $t);
+		  $this->_mergeCSS($p,$tag.'>>ID>>'.$id, $t);
 		}
 }
 
